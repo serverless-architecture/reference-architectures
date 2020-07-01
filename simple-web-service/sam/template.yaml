@@ -24,8 +24,8 @@ Resources:
       CodeUri: src/getUser
       Handler: index.handler
       Runtime: nodejs12.x
-      MemorySize: 3008
-      Timeout: 30
+      MemorySize: 1024
+      Timeout: 6
       Tracing: Active
       Policies:
         - AWSXrayWriteOnlyAccess
@@ -39,7 +39,7 @@ Resources:
             Method: GET
             ApiId: !Ref HttpApi
             PayloadFormatVersion: '2.0'
-            TimeoutInMillis: 29000
+            TimeoutInMillis: 6000
       Environment:
         Variables:
           TABLE_NAME: !Ref Users
