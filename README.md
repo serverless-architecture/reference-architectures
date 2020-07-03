@@ -4,7 +4,7 @@
 
 This project is intended to capture, share, explore, and debate the patterns and practices being used in serverless production applications today.
 
-## [View the patterns are reference architectures](https://www.jeremydaly.com/serverless-reference-architectures/?utm_source=sidebar)
+## [View the patterns and reference architectures](https://www.jeremydaly.com/serverless-reference-architectures/?utm_source=sidebar)
 
 ## Contributions
 
