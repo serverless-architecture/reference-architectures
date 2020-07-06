@@ -1,0 +1,432 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create Stack 1`] = `
+Object {
+  "Outputs": Object {
+    "simplewebserviceapiEndpoint157B94B0": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "simplewebserviceapi3E615412",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "simplewebserviceapiDeploymentStageprod1CEA8C9D",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "AssetParameters84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3ArtifactHash7622FBE8": Object {
+      "Description": "Artifact hash for asset \\"84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3\\"",
+      "Type": "String",
+    },
+    "AssetParameters84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3S3BucketD39156BA": Object {
+      "Description": "S3 bucket for asset \\"84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3\\"",
+      "Type": "String",
+    },
+    "AssetParameters84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3S3VersionKey6F8BD9D1": Object {
+      "Description": "S3 key for asset version \\"84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "SimpleServiceApiHandlerAD9834A2": Object {
+      "DependsOn": Array [
+        "SimpleServiceApiHandlerServiceRoleDefaultPolicyE9D32250",
+        "SimpleServiceApiHandlerServiceRole1663E8B7",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3S3BucketD39156BA",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3S3VersionKey6F8BD9D1",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters84809728643f4e0b0752c557ac6a1f46c61b31bbf9772b8d6561b36125a016e3S3VersionKey6F8BD9D1",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "TABLE_NAME": Object {
+              "Ref": "users9E3E6EF7",
+            },
+          },
+        },
+        "Handler": "simpleWebService.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "SimpleServiceApiHandlerServiceRole1663E8B7",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SimpleServiceApiHandlerServiceRole1663E8B7": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SimpleServiceApiHandlerServiceRoleDefaultPolicyE9D32250": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "users9E3E6EF7",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SimpleServiceApiHandlerServiceRoleDefaultPolicyE9D32250",
+        "Roles": Array [
+          Object {
+            "Ref": "SimpleServiceApiHandlerServiceRole1663E8B7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "simplewebserviceapi3E615412": Object {
+      "Properties": Object {
+        "Description": "A basic of pattern for creating a serverless API or web service. It uses DynamoDB as the database because it scales nicely with the high concurrency capabilities of AWS Lambda.",
+        "Name": "Simple Web Service API",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "simplewebserviceapiAccount585CC891": Object {
+      "DependsOn": Array [
+        "simplewebserviceapi3E615412",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "simplewebserviceapiCloudWatchRoleF91EB1CD",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "simplewebserviceapiCloudWatchRoleF91EB1CD": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "simplewebserviceapiDeploymentD054170Ecf3141af8404e4a37b27e97f99f3a54a": Object {
+      "DependsOn": Array [
+        "simplewebserviceapiuseridGET5AFF4C30",
+        "simplewebserviceapiuseridBDF77AD8",
+        "simplewebserviceapiuser71D48271",
+      ],
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "simplewebserviceapi3E615412",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "simplewebserviceapiDeploymentStageprod1CEA8C9D": Object {
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "simplewebserviceapiDeploymentD054170Ecf3141af8404e4a37b27e97f99f3a54a",
+        },
+        "RestApiId": Object {
+          "Ref": "simplewebserviceapi3E615412",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "simplewebserviceapiuser71D48271": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "simplewebserviceapi3E615412",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "user",
+        "RestApiId": Object {
+          "Ref": "simplewebserviceapi3E615412",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "simplewebserviceapiuseridBDF77AD8": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Ref": "simplewebserviceapiuser71D48271",
+        },
+        "PathPart": "{id}",
+        "RestApiId": Object {
+          "Ref": "simplewebserviceapi3E615412",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "simplewebserviceapiuseridGET5AFF4C30": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "SimpleServiceApiHandlerAD9834A2",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "simplewebserviceapiuseridBDF77AD8",
+        },
+        "RestApiId": Object {
+          "Ref": "simplewebserviceapi3E615412",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "simplewebserviceapiuseridGETApiPermissionSimpleWebServiceTestStacksimplewebserviceapi5DE907DBGETuseridE22457C5": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "SimpleServiceApiHandlerAD9834A2",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "simplewebserviceapi3E615412",
+              },
+              "/",
+              Object {
+                "Ref": "simplewebserviceapiDeploymentStageprod1CEA8C9D",
+              },
+              "/GET/user/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "simplewebserviceapiuseridGETApiPermissionTestSimpleWebServiceTestStacksimplewebserviceapi5DE907DBGETuseridD1481703": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "SimpleServiceApiHandlerAD9834A2",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "simplewebserviceapi3E615412",
+              },
+              "/test-invoke-stage/GET/user/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "users9E3E6EF7": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+        ],
+        "StreamSpecification": Object {
+          "StreamViewType": "NEW_AND_OLD_IMAGES",
+        },
+        "TableName": "users",
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+}
+`;
