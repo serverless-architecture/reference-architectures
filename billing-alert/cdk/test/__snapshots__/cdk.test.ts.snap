@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`stack creates alert 1`] = `
+Object {
+  "Resources": Object {
+    "SpendingAlarm736B4791": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "SpendingTopic7406B88C",
+          },
+        ],
+        "AlarmDescription": "Alarm if AWS spending is over $100",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": Array [
+          Object {
+            "Name": "Currency",
+            "Value": "USD",
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "InsufficientDataActions": Array [
+          Object {
+            "Ref": "SpendingTopic7406B88C",
+          },
+        ],
+        "MetricName": "EstimatedCharges",
+        "Namespace": "AWS/Billing",
+        "Period": 21600,
+        "Statistic": "Maximum",
+        "Threshold": 100,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "SpendingTopic7406B88C": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+    "SpendingTopicmiltoninitechcom8303C3F6": Object {
+      "Properties": Object {
+        "Endpoint": "milton@initech.com",
+        "Protocol": "email",
+        "TopicArn": Object {
+          "Ref": "SpendingTopic7406B88C",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+  },
+}
+`;
