@@ -2,7 +2,8 @@
 
 This uses the [Billing Alert Pattern](https://www.jeremydaly.com/billing-alert-pattern/).
 
-Follow these steps to deploy this pattern using [CDK](https://aws.amazon.com/cdk/).
+Follow these steps to deploy this pattern using [CDK](https://aws.amazon.com/cdk/). This pattern always deploys into the
+us-east-1 region (N. Virginia) as that is where AWS delivers the billing metrics.
 
 1. Enable Billing Alerts in the Console
 
