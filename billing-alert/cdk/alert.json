@@ -1,4 +1,4 @@
 {
   "email": "...",
-  "alertThresholdInDollars": 2
+  "alertThresholdsInDollars": [2, 5, 20]
 }

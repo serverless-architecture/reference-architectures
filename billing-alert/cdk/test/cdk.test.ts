@@ -6,7 +6,7 @@ test('stack creates alert', () => {
     const app = new cdk.App();
     // WHEN
     const stack = new Cdk.BillingAlertStack(app, 'BillingAlertStack', {
-        alertThresholdInDollars: 100,
+        alertThresholdsInDollars: [10, 100],
         email: "milton@initech.com"
     });
     // THEN

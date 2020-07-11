@@ -16,7 +16,7 @@ There doesn't appear to be an API for this!
 ```
 {
   "email": "...",
-  "alertThresholdInDollars": 2
+  "alertThresholdsInDollars": [2, 5, 10]
 }
 ```
 
@@ -56,7 +56,11 @@ cdk bootstrap
 cdk deploy
 ```
 
-9. Clean Up
+9. Confirm subscription to SNS topic
+
+AWS will send a message to the configured email. Click Confirm Subscription to begin receiving any alert messages. 
+
+10. Clean Up
 
 ```bash
 cdk destroy
