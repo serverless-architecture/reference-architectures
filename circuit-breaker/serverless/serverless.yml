@@ -1,0 +1,59 @@
+service: circuit-breaker
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage,'dev'}
+  region: us-east-1
+  stackName: ${self:service}-${self:provider.stage}
+  stackTags:
+    SERVICE: ${self:service}
+  httpApi:
+    payload: '2.0'
+    cors: true
+
+functions:
+  Function:
+    handler: index.handler
+    memorySize: 1024
+    timeout: 29
+    tracing: Active
+    environment:
+      TABLE_NAME: !Ref Status
+      TABLE_ARN: !GetAtt Status.Arn
+    iamRoleStatementsName: ${self:service}-${self:provider.stage}-function-role
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:getItem
+          - dynamodb:putItem
+          - dynamodb:updateItem
+        Resource:
+          - !Join [ '/', [ !GetAtt Status.Arn, '*' ] ]
+          - !GetAtt Status.Arn
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+plugins:
+  - serverless-iam-roles-per-function
+
+resources:
+  Resources:
+    Status:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
