@@ -1,0 +1,106 @@
+service: storage-first
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+  stackName: ${self:service}-${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "sqs:SendMessage"
+      Resource: !GetAtt DLQ.Arn
+    - Effect: Allow
+      Action:
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:ExecuteStatement
+        - rds-data:RollbackTransaction
+      Resource: arn:aws:rds:${self:provider.region}:*:cluster:*
+
+functions:
+  injest:
+    handler: src/ingest/index.handler
+    memorySize: 3008
+    timeout: 30
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - Queue
+              - Arn
+
+custom:
+  apiGatewayServiceProxies:
+    - sqs:
+        path: /message
+        method: post
+        queueName: { 'Fn::GetAtt': ['Queue', 'QueueName'] }
+        cors: true
+        response:
+          template:
+            success: |-
+              { "message": "accepted" }
+            clientError: |-
+              { "message": "there is an error in your request" }
+            serverError: |-
+              { "message": "there was an error handling your request" }
+
+  vpcConfig:
+    cidrBlock: '10.0.0.0/16'
+    createNatGateway: 2
+    createNetworkAcl: false
+    createDbSubnet: true
+    createFlowLogs: false
+    createBastionHost: false
+    bastionHostKeyName: MyKey
+    createNatInstance: false
+    createParameters: false
+    zones:
+      - us-east-1a
+      - us-east-1b
+      - us-east-1c
+    services:
+      - kms
+      - secretsmanager
+    subnetGroups:
+      - rds
+    exportOutputs: false
+
+resources:
+  Resources:
+    Queue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: ${self:provider.stackName}-Queue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt DLQ.Arn
+          maxReceiveCount: 5
+    DLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.stackName}-DLQ
+    Database:
+      Type: AWS::RDS::DBCluster
+      Properties:
+        BackupRetentionPeriod: 1
+        DBSubnetGroupName: !Ref RDSSubnetGroup #created automatically by serverless-vpc-plugin
+        Engine: aurora
+        EngineMode: serverless
+        MasterUsername: storagefirst
+        MasterUserPassword: storagefirst
+        EnableHttpEndpoint: true
+        ScalingConfiguration:
+          AutoPause: false
+          MinCapacity: 2
+          MaxCapacity: 256
+        StorageEncrypted: true
+        VpcSecurityGroupIds:
+          - !Ref AppSecurityGroup #created automatically by serverless-vpc-plugin
+
+plugins:
+  - serverless-apigateway-service-proxy
+  - serverless-cloudformation-sub-variables
+  - serverless-vpc-plugin

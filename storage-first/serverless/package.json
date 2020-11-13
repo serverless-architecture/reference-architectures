@@ -1,0 +1,9 @@
+{
+  "name": "storage-first",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-apigateway-service-proxy": "^1.13.0"
+  }
+}
